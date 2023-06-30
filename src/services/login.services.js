@@ -8,7 +8,6 @@ export const instance = axios.create({
 export const LoginService = async (data) =>{
     try{
         const response =  await instance.post("api-token-auth/",data)
-        console.log(response)
         return {
             token : response?.data?.token
         }

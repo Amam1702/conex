@@ -52,7 +52,6 @@ const Vouchers = () => {
     if(error){
         return setToast({open: true, msg: "something went wrong", type: "error"})
     }
-    console.log(response)
     if(response?.status.includes("Deleted")){
         setToast({open: true, msg: "Deleted Successfully", type: "success"})
         fetchVochers()

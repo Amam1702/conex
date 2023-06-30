@@ -11,7 +11,6 @@ export const instance = axios.create({
 export const getAttandants = async () =>{
     try{
         const response =  await instance.get("api/v1/attendants/")
-        console.log(response)
         return {
             response: response?.data
         }
@@ -26,7 +25,6 @@ export const getAttandants = async () =>{
 export const getAttandantData = async (id) =>{
     try{
         const response =  await instance.get(`api/v1/attendants/${id}/`)
-        console.log(response)
         return {
             response: response?.data
         }
@@ -41,7 +39,6 @@ export const getAttandantData = async (id) =>{
 export const deleteAttandantData = async (id) =>{
     try{
         const response =  await instance.delete(`api/v1/attendant/${id}/`)
-        console.log(response)
         return {
             response: response?.data
         }
@@ -56,7 +53,6 @@ export const deleteAttandantData = async (id) =>{
 export const putAttandantData = async (id, data) =>{
     try{
         const response =  await instance.put(`api/v1/attendants/${id}/`,data)
-        console.log(response)
         return {
             response: response?.data
         }
@@ -71,7 +67,6 @@ export const putAttandantData = async (id, data) =>{
 export const createAttandantData = async (data) =>{
     try{
         const response =  await instance.post(`api/v1/createAttendant/`,data)
-        console.log(response)
         return {
             response: response?.data
         }

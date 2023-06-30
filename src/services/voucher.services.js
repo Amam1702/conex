@@ -11,7 +11,6 @@ export const instance = axios.create({
 export const getVouchers = async () =>{
     try{
         const response =  await instance.get("api/v1/vouchers/")
-        console.log(response)
         return {
             response : response?.data
         }
@@ -26,7 +25,6 @@ export const getVouchers = async () =>{
 export const getVoucherData = async (id) =>{
     try{
         const response =  await instance.get(`api/v1/vouchers/${id}/`)
-        console.log(response)
         return {
             response : response?.data
         }
@@ -41,7 +39,6 @@ export const getVoucherData = async (id) =>{
 export const putVoucherData = async (id,data) =>{
     try{
         const response =  await instance.put(`api/v1/vouchers/${id}/`,data)
-        console.log(response)
         return {
             response : response?.data
         }
@@ -56,7 +53,6 @@ export const putVoucherData = async (id,data) =>{
 export const deleteVoucherData = async (id) =>{
     try{
         const response =  await instance.delete(`api/v1/vouchers/${id}/`)
-        console.log(response)
         return {
             response : response?.data
         }
@@ -70,7 +66,6 @@ export const deleteVoucherData = async (id) =>{
 export const createVoucherData = async (data) =>{
     try{
         const response =  await instance.post("api/v1/createVoucher/", data)
-        console.log(response)
         return {
             response : response?.data
         }

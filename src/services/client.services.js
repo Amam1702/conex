@@ -11,7 +11,6 @@ export const instance = axios.create({
 export const getClients = async () =>{
     try{
         const response =  await instance.get("api/v1/clients/")
-        console.log(response)
         return {
             response :   response?.data
         }
@@ -26,7 +25,6 @@ export const getClients = async () =>{
 export const getClientData = async (id) =>{
     try{
         const response =  await instance.get(`api/v1/client/${id}/`)
-        console.log(response)
         return {
             response :   response?.data
         }
@@ -41,7 +39,6 @@ export const getClientData = async (id) =>{
 export const putClientData = async (id, data) =>{
     try{
         const response =  await instance.put(`api/v1/client/${id}/`,data)
-        console.log(response)
         return {
             response :   response?.data
         }
@@ -56,7 +53,6 @@ export const putClientData = async (id, data) =>{
 export const deleteClientData = async (id) =>{
     try{
         const response =  await instance.delete(`api/v1/client/${id}/`)
-        console.log(response)
         return {
             response :   response?.data
         }
@@ -71,7 +67,6 @@ export const deleteClientData = async (id) =>{
 export const createClientData = async (data) =>{
     try{
         const response =  await instance.post(`api/v1/createClient/`,data)
-        console.log(response)
         return {
             response :   response?.data
         }

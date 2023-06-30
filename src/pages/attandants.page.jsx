@@ -46,7 +46,6 @@ const Attandants = () =>{
     if(error){
         return setToast({open: true, msg: "something went wrong", type: "error"})
     }
-    console.log(response)
     if(response?.status.includes("Deleted")){
         setToast({open: true, msg: "Deleted Successfully", type: "success"})
         fetchAttendants()
@@ -67,7 +66,6 @@ const Attandants = () =>{
   };
 
   useEffect(() => {
-    console.log(state)
     if(localStorage.getItem("attendants") && localStorage.getItem("attendants")?.length && !state?.status){
         setTableData(JSON.parse(localStorage.getItem("attendants")))
     }

@@ -33,7 +33,6 @@ const LoginPage = () => {
         const {token, error} = await LoginService(credentials);
         setLoad(false)
         if(error){
-            console.log("Something went wrong")
             return error
         }
         if(!token || !token?.length ){

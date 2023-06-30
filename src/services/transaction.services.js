@@ -11,7 +11,6 @@ export const instance = axios.create({
 export const getTransactions = async () =>{
     try{
         const response =  await instance.get("api/v1/transactions/")
-        console.log(response)
         return {
             response :  response?.data
         }
@@ -26,7 +25,6 @@ export const getTransactions = async () =>{
 export const getTransactionData = async (id) =>{
     try{
         const response =  await instance.get(`api/v1/transactions/${id}/`)
-        console.log(response)
         return {
             response :  response?.data
         }
@@ -41,7 +39,6 @@ export const getTransactionData = async (id) =>{
 export const putTransactionData = async (id, data) =>{
     try{
         const response =  await instance.put(`api/v1/transactions/${id}/`,data)
-        console.log(response)
         return {
             response :  response?.data
         }
@@ -56,7 +53,6 @@ export const putTransactionData = async (id, data) =>{
 export const deleteTransactionData = async (id) =>{
     try{
         const response =  await instance.delete(`api/v1/transactions/${id}/`)
-        console.log(response)
         return {
             response :  response?.data
         }
@@ -71,7 +67,6 @@ export const deleteTransactionData = async (id) =>{
 export const createTransactionData = async (data) =>{
     try{
         const response =  await instance.post("api/v1/createTransaction/",data)
-        console.log(response)
         return {
             response :  response?.data
         }

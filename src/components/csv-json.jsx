@@ -19,8 +19,8 @@ export const CsvToJsonConverter = () => {
   const [load, setLoad] = useState(false)
   const [toast, setToast] = useState({open: false, msg: "", type: ""})
 
-    const handleToastClose = () =>{
-        setToast({...toast, open: false})
+  const handleToastClose = () =>{
+    setToast({...toast, open: false})
   }
 
   const handleConvertToJSON = () => {
@@ -34,32 +34,39 @@ export const CsvToJsonConverter = () => {
 
     // Check current path and set the required keys accordingly
     if (window.location.pathname.includes("vouchers")) {
-      requiredKeys = Object.keys(voucherData())
+      requiredKeys = Object.keys(voucherData());
     } else if (window.location.pathname.includes("clients")) {
-      requiredKeys = Object.keys(clientData())
+      requiredKeys = Object.keys(clientData());
     } else if (window.location.pathname.includes("transactions")) {
-      requiredKeys = Object.keys(transactionData())
+      requiredKeys = Object.keys(transactionData());
     } else if (window.location.pathname.includes("attendant")) {
-      requiredKeys = Object.keys(attendantData())
+      requiredKeys = Object.keys(attendantData());
     } else {
-      alert("invalid csv file");
+      alert("Invalid csv file");
       return;
     }
-    // Add more conditions for other paths if needed
 
     const filteredData = jsonData.map((data) => {
       const filteredObject = {};
 
       requiredKeys.forEach((key) => {
         if (data.hasOwnProperty(key) && data[key] !== null && data[key] !== "") {
-          filteredObject[key] = data[key];
+          if (typeof data[key] === "object" && data[key] instanceof Date) {
+            // Convert date value to yyyy-mm-dd format
+            const year = data[key].getFullYear();
+            const month = String(data[key].getMonth() + 1).padStart(2, "0");
+            const day = String(data[key].getDate()).padStart(2, "0");
+            filteredObject[key] = `${year}-${month}-${day}`;
+          } else {
+            filteredObject[key] = data[key];
+          }
         }
       });
 
       return filteredObject;
     });
 
-    handleAddData(filteredData)
+    handleAddData(filteredData);
   };
 
   const handleAddData = async (data) =>{
@@ -80,7 +87,7 @@ export const CsvToJsonConverter = () => {
       setToast({open: true, msg: "Error", type: "error"})
     }
     if(resObj?.response){
-      // setToast({open: true, msg: "Done!", type: "success"})
+      setToast({open: true, msg: "Done!", type: "success"})
       console.log(resObj.response)
     }
   }
