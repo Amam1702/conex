@@ -52,7 +52,7 @@ export const deleteAttandantData = async (id) =>{
 
 export const putAttandantData = async (id, data) =>{
     try{
-        const response =  await instance.put(`api/v1/attendants/${id}/`,data)
+        const response =  await instance.put(`api/v1/attendant/${id}/`,data)
         return {
             response: response?.data
         }

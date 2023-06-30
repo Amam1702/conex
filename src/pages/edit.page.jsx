@@ -36,7 +36,7 @@ const EditPage = () => {
     }
 
     const handleType = (title) =>{
-        if(title.includes("date")){
+        if(title.includes("date") || title === "last_used"){
             return "date"
         }
         else if(title.includes("client_id") || title.includes("balance") || title.includes("amount") || title.includes("vouchers") || title.includes("txn_id") || title.includes("atdt_id") ){
@@ -65,45 +65,74 @@ const EditPage = () => {
         setLoad(true)
         if(window.location.pathname.includes("add")){
             let resObject = {}
+            let status = ""
             let addData = {"data": [data]}
             if(window.location.pathname.includes("vouchers")){
                 Object.keys(data).forEach((title)=>{
-                    if(data[title]?.length < 1 && !title.includes("last")){
-                        setLoad(false)
-                        setToast({open: true, msg: `${title} is empty`, type: "error"})
-                        return
+                    if(title === "last_used"){
+                        if(data[title]?.length < 1 || !data[title]){
+                            let copy = data
+                            delete copy[title]
+                            addData = {data: [copy]}
+                        }
+                    }
+                    else{
+                        if(data[title]?.length < 1 && title.includes("last") === false){
+                            setLoad(false)
+                            setToast({open: true, msg: `${title} is empty`, type: "error"})
+                            status = "error"
+                            return
+                        }
                     }
                 })
-                if(toast.type === "error"){
+                if(status !== "error"){
                     resObject = await createVoucherData(addData)
                 }
                 setLoad(false)
                 if(resObject?.error){
                     return setToast({open: true, msg: "Something went wrong", type: "error"})
                 }
-                if(resObject?.response){
-                    setToast({open: true, msg: "Added successfully!", type: "success"})
-                    setTimeout(()=>{
-                        navigate("/vouchers", {state: {status: true}})
-                    },1500)
+                if(Object.keys(resObject?.response || {})?.length){
+                    if(resObject?.response[0][data["voucher_id"]]["client_id"]){
+                        setToast({open: true, msg: "Wrong Client Id!", type: "error"})
+                    }
+                    if(resObject?.response[0][data["voucher_id"]]["last_date"]){
+                        setToast({open: true, msg: "Incorrect format of Last Date - YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]", type: "error"})
+                    }
+                    else{
+                        setToast({open: true, msg: "Added Successfully", type: "success"})
+                        setTimeout(()=>{
+                            navigate("/vouchers", {state: {status: true}})
+                        },1500)
+                    }
                 }
             }
             if(window.location.pathname.includes("clients")){
                 Object.keys(data).forEach((title)=>{
-                    if(data[title]?.length < 1){
-                        setLoad(false)
-                        setToast({open: true, msg: `${title} is empty`, type: "error"})
-                        return
+                    if(title.includes("last_order")){
+                        if(data[title]?.length < 1 || !data[title]){
+                            let copy = data
+                            delete copy[title]
+                            addData = {data: [copy]}
+                        }
+                    }
+                    else{
+                        if(data[title]?.length < 1){
+                            setLoad(false)
+                            setToast({open: true, msg: `${title} is empty`, type: "error"})
+                            status = "error"
+                            return
+                        }
                     }
                 })
-                if(toast.type === "error"){
+                if(status !== "error"){
                     resObject = await createClientData(addData)
                 }
                 setLoad(false)
                 if(resObject?.error){
                     return setToast({open: true, msg: "Something went wrong", type: "error"})
                 }
-                if(resObject?.response){
+                if(Object.keys(resObject?.response || {})?.length){
                     setToast({open: true, msg: "Added successfully!", type: "success"})
                     setTimeout(()=>{
                         navigate("/clients", {state: {status: true}})
@@ -116,7 +145,7 @@ const EditPage = () => {
                 if(resObject?.error){
                     return setToast({open: true, msg: "Something went wrong", type: "error"})
                 }
-                if(resObject?.response){
+                if(Object.keys(resObject?.response || {})?.length){
                     setToast({open: true, msg: "Added successfully!", type: "success"})
                     setTimeout(()=>{
                         navigate("/transactions", {state: {status: true}})
@@ -136,18 +165,19 @@ const EditPage = () => {
                         if(data[title]?.length < 1){
                             setLoad(false)
                             setToast({open: true, msg: `${title} is empty`, type: "error"})
+                            status = "error"
                             return
                         }
                     }
                 })
-                if(toast.type === "error"){
+                if(status !== "error"){
                     resObject = await createAttandantData(addData)
                 }
                 setLoad(false)
                 if(resObject?.error){
                     return setToast({open: true, msg: "Something went wrong", type: "error"})
                 }
-                if(resObject?.response){
+                if(Object.keys(resObject?.response || {})?.length){
                     setToast({open: true, msg: "Added successfully!", type: "success"})
                     setTimeout(()=>{
                         navigate("/attendants", {state: {status: true}})
@@ -158,46 +188,76 @@ const EditPage = () => {
         }
         else{
             let resObject = {}
+            let status = ""
             if(window.location.pathname.includes("vouchers")){
                 Object.keys(data).forEach((title)=>{
-                    if(title === "last_used" || title === "last_tranasction_id"){
-
+                    if(title === "last_used"){
+                        if(data[title]?.length < 1 || !data[title]){
+                            let copy = data
+                            delete copy[title]
+                            setData({...copy})
+                        }
                     }
                     else{
-
-                        if(data[title]?.length < 1){
+                        if(data[title]?.length < 1 && title.includes("last") === false){
                             setLoad(false)
                             setToast({open: true, msg: `${title} is empty`, type: "error"})
+                            status = "error"
                             return
                         }
                     }
                 })
-                resObject = await putVoucherData(data?.voucher_id, data)
+                if(status !== "error"){
+                    resObject = await putVoucherData(data?.voucher_id, data)
+                }
                 setLoad(false)
                 if(resObject?.error){
                     return setToast({open: true, msg: "Something went wrong", type: "error"})
                 }
-                if(resObject?.response){
-                    setToast({open: true, msg: "Update successfully!", type: "success"})
-                    setTimeout(()=>{
-                        navigate("/vouchers", {state: {status: true}})
-                    },1500)
+                if(Object.keys(resObject?.response || {})?.length){
+                    if(resObject?.response["status"].includes("Updated")){
+                        setToast({open: true, msg: "Updated Successfully", type: "success"})
+                        setTimeout(()=>{
+                            navigate("/vouchers", {state: {status: true}})
+                        },1500)
+                    }
+                    else if(resObject?.response[0][data["voucher_id"]]["client_id"]){
+                        setToast({open: true, msg: "Wrong Client Id!", type: "error"})
+                    }
+                    else if(resObject?.response[0][data["voucher_id"]]["last_date"]){
+                        setToast({open: true, msg: "Incorrect format of Last Date - YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]", type: "error"})
+                    }
+                    else{
+                        setToast({open: true, msg: "Wrong Data", type: "error"})
+                    }
                 }
             }
             if(window.location.pathname.includes("clients")){
                 Object.keys(data).forEach((title)=>{
-                    if(data[title]?.length < 1){
-                        setLoad(false)
-                        setToast({open: true, msg: `${title} is empty`, type: "error"})
-                        return
+                    if(title.includes("last_order")){
+                        if(data[title]?.length < 1 || !data[title]){
+                            let copy = data
+                            delete copy[title]
+                            setData({...copy})
+                        }
+                    }
+                    else{
+                        if(data[title]?.length < 1){
+                            setLoad(false)
+                            setToast({open: true, msg: `${title} is empty`, type: "error"})
+                            status = "error"
+                            return
+                        }
                     }
                 })
-                resObject = await putClientData(data?.client_id, data)
+                if(status !== "error"){
+                    resObject = await putClientData(data?.client_id, data)
+                }
                 setLoad(false)
                 if(resObject?.error){
                     return setToast({open: true, msg: "Something went wrong", type: "error"})
                 }
-                if(resObject?.response){
+                if(Object.keys(resObject?.response || {})?.length){
                     setToast({open: true, msg: "Update successfully!", type: "success"})
                     setTimeout(()=>{
                         navigate("/clients", {state: {status: true}})
@@ -210,7 +270,7 @@ const EditPage = () => {
                 if(resObject?.error){
                     return setToast({open: true, msg: "Something went wrong", type: "error"})
                 }
-                if(resObject?.response){
+                if(Object.keys(resObject?.response || {})?.length){
                     setToast({open: true, msg: "Update successfully!", type: "success"})
                     setTimeout(()=>{
                         navigate("/transactions", {state: {status: true}})
@@ -232,16 +292,19 @@ const EditPage = () => {
                         if(data[title]?.length < 1){
                             setLoad(false)
                             setToast({open: true, msg: `${title} is empty`, type: "error"})
+                            status = "error"
                             return
                         }
                     }
                 })
-                resObject = await putAttandantData(data?.atdt_id, updated)
+                if(status !== "error"){
+                    resObject = await putAttandantData(data?.employee_id, updated)
+                }
                 setLoad(false)
                 if(resObject?.error){
                     return setToast({open: true, msg: "Something went wrong", type: "error"})
                 }
-                if(resObject?.response){
+                if(Object.keys(resObject?.response || {})?.length){
                     setToast({open: true, msg: "Update successfully!", type: "success"})
                     setTimeout(()=>{
                         navigate("/attendants", {state: {status: true}})
@@ -302,7 +365,7 @@ const EditPage = () => {
                             return(
                                 <Grid item xs={12} sm={6} key={index}>
                                     {
-                                        title==="status" || title === "last_used" ? (
+                                        title==="status" ? (
                                             <FormControl fullWidth>
                                                 <InputLabel id="demo-simple-select-label">{title}</InputLabel>
                                                 <Select
